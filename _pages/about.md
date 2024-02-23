@@ -24,6 +24,8 @@ I received a B.S. degree in Medical Information Engineering from Chengdu Univers
 
 Throughout my undergraduate studies, I gained a solid understanding of medical fundamentals, **Computer Programming Languages**, **Big Data**, and **Artificial Intelligence**——the foundational theories of modern information science. In my master's program1, I have further accumulated knowledge in various fields, including **Operations Research**, **Game Theor**y, **System Dynamics**, **Spatial Econometrics**, and **Managerial Economics**.
 
+**Download my**[CV](/pdf/Tang]-2022-Mechanism%20of%20Magnetic%20Flux%20Leakage%20Detection%20Method%20Based%20on%20the%20Slotted.pdf).
+
 Interests                                              Skills
 - Instrumentation                                      - Instrumentation
 - Nondestructive testing (NDT)                         - Nondestructive testing (NDT)
