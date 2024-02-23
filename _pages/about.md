@@ -92,7 +92,7 @@ Yang Shuhui, `Zixuan Zhang`, Yu Keyao, Zhigang Li. *Sustainable Cities and Socie
 <div class='paper-box'><div class='paper-box-image'><div><div class="badge">Environmental Science and Pollution Research. 2022</div><img src='images/PWQ.svg' alt="sym" width="100%"></div></div>
 <div class='paper-box-text' markdown="1">
 
-[Collaborative Optimal Allocation of Water Resources and Sewage Discharge Rights in Watershed Cities: Considering Equity among Water Sectors](/pdf/COAWRS.pdf)
+[Collaborative Optimal Allocation of Water Resources and Sewage Discharge Rights in Watershed Cities: Considering Equity among Water Sectors](/prj)
 
 Mingkang Yuan, Yue Li, `Zixuan Zhang`, Lin Wang. *Environmental Science and Pollution Research*, 2023, 22(9): 3587. (JCR:Q2; IF:3.847)
 -	**Keywords:** High-quality economic development, Water resources carrying capacity, Coupled coordination relationships, Basin cities
