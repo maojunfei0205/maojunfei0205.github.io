@@ -33,7 +33,7 @@ Interests                                              Skills
 - Magnetic sensors
 - Nondestructive testing equipment
 
-
+<span class='anchor' id='publications'></span>
 # 📝 Publications 
 
 <div class='paper-box'><div class='paper-box-image'><div><div class="badge">Journal of Environment Management. 2023</div><img src='images/CCP.svg' alt="sym" width="100%"></div></div>
