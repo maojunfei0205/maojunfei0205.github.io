@@ -100,7 +100,7 @@ Mingkang Yuan, Yue Li, `Zixuan Zhang`, Lin Wang. *Environmental Science and Poll
 </div>
 </div>
 
-# 🏛️ Projects
+# 🎓 Educations 
 <div class='paper-box'>
 <div class='paper-box-text' markdown="1">
 
