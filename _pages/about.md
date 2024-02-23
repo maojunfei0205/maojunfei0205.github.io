@@ -22,7 +22,7 @@ I graduated from School of Mechanical Science and Engineering,  Huazhong Univers
  
 I received a B.S. degree in Medical Information Engineering from Chengdu University of Traditional Chinese Medicine in 2022. Currently, I am working toward an M.S. degree in Management Science and Engineering at Chengdu University of Technology with an expected graduation in June 2025.
 
-Throughout my undergraduate studies, I gained a solid understanding of medical fundamentals, **Computer Programming Languages**, **Big Data**, and **Artificial Intelligence**——the foundational theories of modern information science. In my master's program, I have further accumulated knowledge in various fields, including **Operations Research**, **Game Theor**y, **System Dynamics**, **Spatial Econometrics**, and **Managerial Economics**.
+Throughout my undergraduate studies, I gained a solid understanding of medical fundamentals, **Computer Programming Languages**, **Big Data**, and **Artificial Intelligence**——the foundational theories of modern information science. In my master's program1, I have further accumulated knowledge in various fields, including **Operations Research**, **Game Theor**y, **System Dynamics**, **Spatial Econometrics**, and **Managerial Economics**.
 
 Interests                                              Skills
 - Instrumentation                                      - Instrumentation
