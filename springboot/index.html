@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Spring Boot中使用拦截器 | jf.mao的日常</title><meta name="author" content="jf.mao"><meta name="copyright" content="jf.mao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Spring Boot中使用拦截器拦截器的原理很简单，是 AOP 的一种实现，专门拦截对动态资源的后台请求，即拦截对控制层的请求。使用场景比较多的是判断用户是否有权限请求后台，更拔高一层的使用场景也有，比如拦截器可以结合 websocket 一起使用，用来拦截 websocket 请求，然后做相应的处理等等。拦截器不会拦截静态资源，Spring Boot 的默认静态目录为 resources&amp;#x">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Spring Boot中使用拦截器">
+<meta property="og:url" content="https://maojunfei0205.github.io/springboot/index.html">
+<meta property="og:site_name" content="jf.mao的日常">
+<meta property="og:description" content="Spring Boot中使用拦截器拦截器的原理很简单，是 AOP 的一种实现，专门拦截对动态资源的后台请求，即拦截对控制层的请求。使用场景比较多的是判断用户是否有权限请求后台，更拔高一层的使用场景也有，比如拦截器可以结合 websocket 一起使用，用来拦截 websocket 请求，然后做相应的处理等等。拦截器不会拦截静态资源，Spring Boot 的默认静态目录为 resources&amp;#x">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://maojunfei0205.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-04-01T15:01:49.000Z">
+<meta property="article:modified_time" content="2025-04-01T15:03:01.685Z">
+<meta property="article:author" content="jf.mao">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://maojunfei0205.github.io/img/butterfly-icon.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://maojunfei0205.github.io/springboot/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Spring Boot中使用拦截器',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><link rel="stylesheet" href="/css/background.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/image/2.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">jf.mao的日常</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Spring Boot中使用拦截器</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="Spring-Boot中使用拦截器"><a href="#Spring-Boot中使用拦截器" class="headerlink" title="Spring Boot中使用拦截器"></a>Spring Boot中使用拦截器</h1><p>拦截器的原理很简单，是 AOP 的一种实现，专门拦截对动态资源的后台请求，即拦截对控制层的请求。使用场景比较多的是判断用户是否有权限请求后台，更拔高一层的使用场景也有，比如拦截器可以结合 websocket 一起使用，用来拦截 websocket 请求，然后做相应的处理等等。拦截器不会拦截静态资源，Spring Boot 的默认静态目录为 resources&#x2F;static，该目录下的静态页面、js、css、图片等等，不会被拦截（也要看如何实现，有些情况也会拦截，我在下文会指出）。</p>
+<h2 id="1-拦截器的快速使用"><a href="#1-拦截器的快速使用" class="headerlink" title="1. 拦截器的快速使用"></a>1. 拦截器的快速使用</h2><p>使用拦截器很简单，只需要两步即可：定义拦截器和配置拦截器。在配置拦截器中，Spring Boot 2.0 以后的版本和之前的版本有所不同，我会重点讲解一下这里可能出现的坑。</p>
+<h3 id="1-1-定义拦截器"><a href="#1-1-定义拦截器" class="headerlink" title="1.1 定义拦截器"></a>1.1 定义拦截器</h3><p>定义拦截器，只需要实现 <code>HandlerInterceptor</code> 接口，<code>HandlerInterceptor</code> 接口是所有自定义拦截器或者 Spring Boot 提供的拦截器的鼻祖，所以，首先来了解下该接口。该接口中有三个方法： <code>preHandle(……)</code>、<code>postHandle(……)</code> 和 <code>afterCompletion(……)</code> 。</p>
+<blockquote>
+<p><code>preHandle(……)</code> 方法：该方法的执行时机是，当某个 url 已经匹配到对应的 Controller 中的某个方法，且在这个方法执行之前。所以 <code>preHandle(……)</code> 方法可以决定是否将请求放行，这是通过返回值来决定的，返回 true 则放行，返回 false 则不会向后执行。<br><code>postHandle(……)</code> 方法：该方法的执行时机是，当某个 url 已经匹配到对应的 Controller 中的某个方法，且在执行完了该方法，但是在 DispatcherServlet 视图渲染之前。所以在这个方法中有个 ModelAndView 参数，可以在此做一些修改动作。<br><code>afterCompletion(……)</code> 方法：顾名思义，该方法是在整个请求处理完成后（包括视图渲染）执行，这时做一些资源的清理工作，这个方法只有在 <code>preHandle(……)</code> 被成功执行后并且返回 true 才会被执行。</p>
+</blockquote>
+<p>了解了该接口，接下来自定义一个拦截器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义拦截器</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> shengwu ni</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2018/08/03</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(MyInterceptor.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">HandlerMethod</span> <span class="variable">handlerMethod</span> <span class="operator">=</span> (HandlerMethod) handler;</span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> handlerMethod.getMethod();</span><br><span class="line">        <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> method.getName();</span><br><span class="line">        logger.info(<span class="string">&quot;====拦截到了方法：&#123;&#125;，在该方法执行之前执行====&quot;</span>, methodName);</span><br><span class="line">        <span class="comment">// 返回true才会继续执行，返回false则取消当前请求</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;执行完方法之后进执行(Controller方法调用之后)，但是此时还没进行视图渲染&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>OK，到此为止，拦截器已经定义完成，接下来就是对该拦截器进行拦截配置。</p>
+<h3 id="1-2-配置拦截器"><a href="#1-2-配置拦截器" class="headerlink" title="1.2 配置拦截器"></a>1.2 配置拦截器</h3><p>在 Spring Boot 2.0 之前，我们都是直接继承 WebMvcConfigurerAdapter 类，然后重写 <code>addInterceptors</code> 方法来实现拦截器的配置。但是在 Spring Boot 2.0 之后，该方法已经被废弃了（当然，也可以继续用），取而代之的是 WebMvcConfigurationSupport 方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyInterceptorConfig</span> <span class="keyword">extends</span> <span class="title class_">WebMvcConfigurationSupport</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        registry.addInterceptor(<span class="keyword">new</span> <span class="title class_">MyInterceptor</span>()).addPathPatterns(<span class="string">&quot;/**&quot;</span>);</span><br><span class="line">        <span class="built_in">super</span>.addInterceptors(registry);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在该配置中重写 <code>addInterceptors</code> 方法，将我们上面自定义的拦截器添加进去，<code>addPathPatterns</code> 方法是添加要拦截的请求，这里我们拦截所有的请求。这样就配置好拦截器了，接下来写一个 Controller 测试一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/interceptor&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InterceptorController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/test&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>让其跳转到 hello.html 页面，直接在 hello.html 中输出 <code>hello interceptor</code> 即可。启动项目，在浏览器中输入 <code>localhost:8080/interceptor/test</code> 看一下控制台的日志：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">====拦截到了方法：test，在该方法执行之前执行====  </span><br><span class="line">执行完方法之后进执行(Controller方法调用之后)，但是此时还没进行视图渲染  </span><br><span class="line">整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了</span><br><span class="line">123</span><br></pre></td></tr></table></figure>
+
+<p>可以看出拦截器已经生效，并能看出其执行顺序。</p>
+<h3 id="1-3-解决静态资源被拦截问题"><a href="#1-3-解决静态资源被拦截问题" class="headerlink" title="1.3 解决静态资源被拦截问题"></a>1.3 解决静态资源被拦截问题</h3><p>上文中已经介绍了拦截器的定义和配置，但是这样是否就没问题了呢？其实不然，如果使用上面这种配置的话，我们会发现一个缺陷，那就是静态资源被拦截了。可以在 resources&#x2F;static&#x2F; 目录下放置一个图片资源或者 html 文件，然后启动项目直接访问，即可看到无法访问的现象。</p>
+<p>也就是说，虽然 Spring Boot 2.0 废弃了WebMvcConfigurerAdapter，但是 WebMvcConfigurationSupport 又会导致默认的静态资源被拦截，这就需要我们手动将静态资源放开。</p>
+<p>如何放开呢？除了在 MyInterceptorConfig 配置类中重写 <code>addInterceptors</code> 方法外，还需要再重写一个方法：<code>addResourceHandlers</code>，将静态资源放开：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用来指定静态资源不被拦截，否则继承WebMvcConfigurationSupport这种方式会导致静态资源无法直接访问</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> registry</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> &#123;</span><br><span class="line">    registry.addResourceHandler(<span class="string">&quot;/**&quot;</span>).addResourceLocations(<span class="string">&quot;classpath:/static/&quot;</span>);</span><br><span class="line">    <span class="built_in">super</span>.addResourceHandlers(registry);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这样配置好之后，重启项目，静态资源也可以正常访问了。如果你是个善于学习或者研究的人，那肯定不会止步于此，没错，上面这种方式的确能解决静态资源无法访问的问题，但是，还有更方便的方式来配置。</p>
+<p>我们不继承 WebMvcConfigurationSupport 类，直接实现 WebMvcConfigurer 接口，然后重写 <code>addInterceptors</code> 方法，将自定义的拦截器添加进去即可，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyInterceptorConfig</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        <span class="comment">// 实现WebMvcConfigurer不会导致静态资源被拦截</span></span><br><span class="line">        registry.addInterceptor(<span class="keyword">new</span> <span class="title class_">MyInterceptor</span>()).addPathPatterns(<span class="string">&quot;/**&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这样就非常方便了，实现 WebMvcConfigure 接口的话，不会拦截 Spring Boot 默认的静态资源。</p>
+<p>这两种方式都可以，具体他们之间的细节，感兴趣的读者可以做进一步的研究，由于这两种方式的不同，继承 WebMvcConfigurationSupport 类的方式可以用在前后端分离的项目中，后台不需要访问静态资源（就不需要放开静态资源了）；实现 WebMvcConfigure 接口的方式可以用在非前后端分离的项目中，因为需要读取一些图片、css、js文件等等。</p>
+<h2 id="2-拦截器使用实例"><a href="#2-拦截器使用实例" class="headerlink" title="2. 拦截器使用实例"></a>2. 拦截器使用实例</h2><h3 id="2-1-判断用户有没有登录"><a href="#2-1-判断用户有没有登录" class="headerlink" title="2.1 判断用户有没有登录"></a>2.1 判断用户有没有登录</h3><p>一般用户登录功能我们可以这么做，要么往 session 中写一个 user，要么针对每个 user 生成一个 token，第二种要更好一点，那么针对第二种方式，如果用户登录成功了，每次请求的时候都会带上该用户的 token，如果未登录，则没有该 token，服务端可以检测这个 token 参数的有无来判断用户有没有登录，从而实现拦截功能。我们改造一下 <code>preHandle</code> 方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">HandlerMethod</span> <span class="variable">handlerMethod</span> <span class="operator">=</span> (HandlerMethod) handler;</span><br><span class="line">    <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> handlerMethod.getMethod();</span><br><span class="line">    <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> method.getName();</span><br><span class="line">    logger.info(<span class="string">&quot;====拦截到了方法：&#123;&#125;，在该方法执行之前执行====&quot;</span>, methodName);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断用户有没有登陆，一般登陆之后的用户都有一个对应的token</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">token</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == token || <span class="string">&quot;&quot;</span>.equals(token)) &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;用户未登录，没有权限执行……请登录&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回true才会继续执行，返回false则取消当前请求</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>重启项目，在浏览器中输入 <code>localhost:8080/interceptor/test</code> 后查看控制台日志，发现被拦截，如果在浏览器中输入 <code>localhost:8080/interceptor/test?token=123</code> 即可正常往下走。</p>
+<h3 id="2-2-取消拦截操作"><a href="#2-2-取消拦截操作" class="headerlink" title="2.2 取消拦截操作"></a>2.2 取消拦截操作</h3><p>根据上文，如果我要拦截所有 <code>/admin</code> 开头的 url 请求的话，需要在拦截器配置中添加这个前缀，但是在实际项目中，可能会有这种场景出现：某个请求也是 <code>/admin</code> 开头的，但是不能拦截，比如 <code>/admin/login</code> 等等，这样的话又需要去配置。那么，可不可以做成一个类似于开关的东西，哪里不需要拦截，我就在哪里弄个开关上去，做成这种灵活的可插拔的效果呢？</p>
+<p>是可以的，我们可以定义一个注解，该注解专门用来取消拦截操作，如果某个 Controller 中的方法我们不需要拦截掉，即可在该方法上加上我们自定义的注解即可，下面先定义一个注解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 该注解用来指定某个方法不用拦截</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> UnInterception &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后在 Controller 中的某个方法上添加该注解，在拦截器处理方法中添加该注解取消拦截的逻辑，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">HandlerMethod</span> <span class="variable">handlerMethod</span> <span class="operator">=</span> (HandlerMethod) handler;</span><br><span class="line">    <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> handlerMethod.getMethod();</span><br><span class="line">    <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> method.getName();</span><br><span class="line">    logger.info(<span class="string">&quot;====拦截到了方法：&#123;&#125;，在该方法执行之前执行====&quot;</span>, methodName);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过方法，可以获取该方法上的自定义注解，然后通过注解来判断该方法是否要被拦截</span></span><br><span class="line">    <span class="comment">// @UnInterception 是我们自定义的注解</span></span><br><span class="line">    <span class="type">UnInterception</span> <span class="variable">unInterception</span> <span class="operator">=</span> method.getAnnotation(UnInterception.class);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> != unInterception) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回true才会继续执行，返回false则取消当前请求</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Controller 中的方法代码可以参见源码，重启项目在浏览器中输入 <code>http://localhost:8080/interceptor/test2?token=123</code> 测试一下，可以看出，加了该注解的方法不会被拦截。</p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>本节主要介绍了 Spring Boot 中拦截器的使用，从拦截器的创建、配置，到拦截器对静态资源的影响，都做了详细的分析。Spring Boot 2.0 之后拦截器的配置支持两种方式，可以根据实际情况选择不同的配置方式。最后结合实际中的使用，举了两个常用的场景，希望读者能够认真消化，掌握拦截器的使用。</p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">jf.mao</div><div class="author-info-description">所有的难熬都会好的</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/01/SpringBoot%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9B%91%E5%90%AC%E5%99%A8/" title="SpringBoot中使用监听器">SpringBoot中使用监听器</a><time datetime="2025-04-01T15:11:01.000Z" title="发表于 2025-04-01 23:11:01">2025-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/01/springboot/" title="Spring Boot中使用拦截器">Spring Boot中使用拦截器</a><time datetime="2025-04-01T15:01:49.000Z" title="发表于 2025-04-01 23:01:49">2025-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/01/a/" title="启动命令">启动命令</a><time datetime="2025-04-01T14:40:28.000Z" title="发表于 2025-04-01 22:40:28">2025-04-01</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/springboot/"><span class="card-category-list-name">springboot</span><span class="card-category-list-count">3</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E7%9B%B8%E5%86%8C/" style="font-size: 1.1em; color: #999">相册</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/04/">
+            <span class="card-archive-list-date">
+              四月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">3</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-04-01T15:31:11.527Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By jf.mao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
